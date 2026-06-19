@@ -1,0 +1,10 @@
+{
+  "id": "combat-tracker",
+  "name": "Combat Tracker",
+  "version": "1.0.0",
+  "minAppVersion": "0.15.0",
+  "description": "Full encounter tracker for D&D 5e — initiative order, mobs with per-creature HP, individual creatures, AoE/attack damage, bestiary autocomplete, and a player-facing popout display for a second monitor.",
+  "author": "Katlin John",
+  "authorUrl": "https://github.com/katlinhogan",
+  "isDesktopOnly": false
+}

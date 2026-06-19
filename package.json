@@ -1,0 +1,16 @@
+{
+  "name": "obsidian-combat-tracker",
+  "version": "1.0.0",
+  "description": "Full encounter tracker for D&D 5e — initiative, mobs, individual creatures, AoE damage, bestiary autocomplete, and a player-facing popout display.",
+  "main": "main.js",
+  "scripts": {
+    "build": "echo 'No build step required — main.js is plain JavaScript.'"
+  },
+  "keywords": ["obsidian", "obsidian-plugin", "dnd", "ttrpg", "initiative", "combat"],
+  "author": "Katlin John",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/katlinhogan/obsidian-combat-tracker"
+  }
+}

@@ -313,6 +313,11 @@ class CombatTrackerView extends ItemView {
       else if (entry.type === 'individual') this._renderIndividual(el, entry, partyACs, isTurn);
       else if (entry.type === 'player')     this._renderPlayer(el, entry, isTurn);
     }
+
+    if (currentTurnId) {
+      const activeCard = el.querySelector('.mt-current-turn');
+      if (activeCard) activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
   }
 
   // ── Initiative chip ──
@@ -895,7 +900,9 @@ class PlayerView extends ItemView {
     const { entries, round, currentTurnId } = this.plugin.settings;
     const sorted      = sortedByInitiative(entries);
     const hasInit     = sorted.some(e => e.initiative !== null);
-    const activeEntry = sorted.find(e => e.id === currentTurnId) ?? null;
+    const activeIdx   = sorted.findIndex(e => e.id === currentTurnId);
+    const activeEntry = activeIdx >= 0 ? sorted[activeIdx] : null;
+    const nextEntry   = activeIdx >= 0 ? sorted[(activeIdx + 1) % sorted.length] : null;
 
     const banner = root.createEl('div', { cls: 'pv-banner' });
     banner.createEl('span', {
@@ -945,8 +952,9 @@ class PlayerView extends ItemView {
     const list = root.createEl('div', { cls: 'pv-list' });
 
     for (const entry of sorted) {
-      const isTurn = entry.id === currentTurnId;
-      const row    = list.createEl('div', { cls: `pv-row${isTurn ? ' pv-active' : ''}` });
+      const isTurn  = entry.id === currentTurnId;
+      const isNext  = !isTurn && nextEntry && entry.id === nextEntry.id;
+      const row     = list.createEl('div', { cls: `pv-row${isTurn ? ' pv-active' : ''}${isNext ? ' pv-ondeck' : ''}` });
 
       const initEl = row.createEl('div', { cls: 'pv-init' });
       initEl.createEl('span', {
@@ -955,7 +963,8 @@ class PlayerView extends ItemView {
       });
 
       const nameEl = row.createEl('div', { cls: 'pv-name' });
-      if (isTurn) nameEl.createEl('span', { text: '▶ ', cls: 'pv-arrow' });
+      if (isTurn)       nameEl.createEl('span', { text: 'ACTIVE',  cls: 'pv-turn-badge pv-badge-active' });
+      else if (isNext)  nameEl.createEl('span', { text: 'ON DECK', cls: 'pv-turn-badge pv-badge-ondeck' });
       nameEl.createEl('span', { text: entry.name });
 
       const pillEl = row.createEl('div', { cls: 'pv-status' });

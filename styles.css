@@ -1,20 +1,24 @@
 /* ── Combat Tracker Plugin ── */
 
 .mt-root {
-  padding: 10px 12px;
-  font-size: 13px;
+  padding: 0 8px 6px;
+  font-size: 12px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
 }
 
 /* ── Header ── */
 
 .mt-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--background-primary);
   display: flex;
   flex-direction: column;
-  gap: 7px;
-  padding-bottom: 10px;
+  gap: 5px;
+  padding: 6px 0;
   border-bottom: 1px solid var(--background-modifier-border);
 }
 
@@ -90,11 +94,11 @@
 .mt-card {
   background: var(--background-secondary);
   border: 1px solid var(--background-modifier-border);
-  border-radius: 8px;
-  padding: 10px 12px;
+  border-radius: 6px;
+  padding: 5px 8px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 3px;
 }
 
 .mt-dead {
@@ -170,7 +174,7 @@
 /* ── Card head ── */
 
 .mt-head {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   display: flex;
   align-items: baseline;
@@ -296,8 +300,8 @@
 
 .mt-actions {
   display: flex;
-  gap: 6px;
-  margin-top: 4px;
+  gap: 4px;
+  margin-top: 2px;
   align-items: center;
   flex-wrap: wrap;
 }
@@ -434,7 +438,7 @@
 .mt-entries {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
 }
 
 /* ── Player view button in DM header ── */
@@ -464,13 +468,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 28px 20px 20px;
+  padding: 14px 20px;
   background: var(--background-secondary);
   border-bottom: 2px solid var(--background-modifier-border);
 }
 
 .pv-round {
-  font-size: 36px;
+  font-size: 26px;
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -502,7 +506,7 @@
 
 /* Image area — explicit height so the image knows what 100% means */
 .pv-img-area {
-  height: 52vh;
+  height: 28vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -526,8 +530,8 @@
 .pv-spotlight-info {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px 24px;
+  gap: 10px;
+  padding: 8px 16px;
   background: var(--background-secondary);
   border-top: 1px solid var(--background-modifier-border);
   flex-shrink: 0;
@@ -539,8 +543,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 32px 20px;
-  gap: 8px;
+  padding: 16px 20px;
+  gap: 6px;
   background: linear-gradient(135deg, rgba(61,158,110,0.12), transparent);
 }
 
@@ -554,7 +558,7 @@
 
 /* Shared: large creature/player name in spotlight */
 .pv-spotlight-name {
-  font-size: 32px;
+  font-size: 22px;
   font-weight: 800;
   color: var(--text-normal);
   line-height: 1.1;
@@ -563,8 +567,8 @@
 
 /* Larger pills in spotlight */
 .pv-spotlight-info .pv-pill {
-  font-size: 14px;
-  padding: 5px 16px;
+  font-size: 12px;
+  padding: 3px 12px;
   flex-shrink: 0;
 }
 
@@ -597,6 +601,34 @@
   background: var(--background-primary-alt, var(--background-secondary));
   border-left-color: var(--interactive-accent);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+}
+
+/* On-deck row (next in initiative) */
+.pv-ondeck {
+  border-left-color: rgba(90, 125, 194, 0.4);
+}
+
+/* Turn badges (Active / On Deck) */
+.pv-turn-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-right: 8px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+.pv-badge-active {
+  background: var(--interactive-accent);
+  color: var(--text-on-accent);
+}
+.pv-badge-ondeck {
+  background: rgba(90, 125, 194, 0.18);
+  color: #5a7dc2;
+  border: 1px solid rgba(90, 125, 194, 0.35);
 }
 
 /* Initiative bubble */
@@ -634,10 +666,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.pv-arrow {
-  color: var(--interactive-accent);
 }
 
 /* Status pill */

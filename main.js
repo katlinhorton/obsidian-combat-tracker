@@ -234,7 +234,7 @@ class CombatTrackerView extends ItemView {
     addBtn.createEl('span', { text: '+ Add' });
     addBtn.onclick = () => new AddEntryModal(this.app, this.plugin, () => this.render()).open();
 
-    const playersBtn = addGroup.createEl('button', { cls: 'mt-btn mt-btn-players', title: 'Import party from Initiative Tracker' });
+    const playersBtn = addGroup.createEl('button', { cls: 'mt-btn mt-btn-players', title: 'Import party from vault player notes' });
     playersBtn.createEl('span', { text: '+ Players' });
     playersBtn.onclick = async () => {
       await this.plugin.addPlayers(this.app);

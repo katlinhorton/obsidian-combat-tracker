@@ -7,7 +7,7 @@ A D&D 5e encounter tracker for Obsidian. Tracks initiative order, mob HP (per-cr
 ## Features
 
 - Initiative rolling and turn tracking with round counter
-- Auto-import party members from the TTRPG Initiative Tracker plugin
+- Auto-import party members from your player character notes in the vault
 - Mob tracking with per-creature HP — AoE and attack damage handled separately, no HP rollover between creatures
 - Individual creature tracking with HP bar
 - Bestiary autocomplete — name autocomplete fills HP, AC, attack bonus, damage, and initiative modifier from your vault files
@@ -44,7 +44,9 @@ Click **+ Add** in the tracker header.
 
 ### Adding Players
 
-Click **+ Players** to auto-import your party from the TTRPG Initiative Tracker plugin. Players already present in the tracker are skipped.
+Click **+ Players** to import your party from the folder configured in plugin settings (default: `1-Party/ChaosMonkeys`). Any note in that folder with `Role: Player` and `Status: Active` in its frontmatter is imported. Players already present in the tracker are skipped.
+
+To change the party folder, go to **Settings → Combat Tracker → Party folder**.
 
 ### Rolling Initiative
 
@@ -59,7 +61,7 @@ Once any initiative is set, the header shows the current round and two new contr
 - **Next →** — advances to the next entry in initiative order (highest to lowest). Wraps at the end of the list and increments the round counter.
 - **↺** — resets all initiative values and the round counter back to 1.
 
-The active entry is highlighted with an accent border and a **▶** arrow.
+The active entry is highlighted with an accent border and an **ACTIVE** badge. The next entry in order shows an **ON DECK** badge.
 
 ### Sort Order
 
@@ -102,7 +104,7 @@ This opens a separate OS window you can drag to a second monitor or projector. I
 
 - **Round number** in a large banner at the top
 - **Creature spotlight** — when it is a monster's or mob's turn, the creature's image (pulled from the bestiary file) fills the upper portion of the screen with its name and condition below. When it is a player's turn, a large "Player's Turn" panel with the player's name is shown instead.
-- **Initiative list** — all entries sorted by initiative, with the active turn highlighted and marked with ▶.
+- **Initiative list** — all entries sorted by initiative, with the active turn highlighted and marked **ACTIVE** and the next entry marked **ON DECK**.
 
 **Creature conditions shown to players** (no exact HP numbers):
 
@@ -144,5 +146,7 @@ Images in the player view spotlight are pulled from the creature's vault file �
 ## Requirements
 
 - Obsidian 0.15.0 or later
-- [TTRPG Initiative Tracker](https://github.com/javalent/initiative-tracker) — required for **+ Players** import
-- [obsidian-5e-statblocks](https://github.com/javalent/fantasy-statblocks) — optional; speeds up bestiary loading if already installed
+
+### Optional integrations
+
+- [obsidian-5e-statblocks](https://github.com/javalent/fantasy-statblocks) — speeds up bestiary loading if already installed; the plugin falls back to scanning vault files directly without it

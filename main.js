@@ -13,7 +13,6 @@ const { Plugin, ItemView, Modal, Setting, PluginSettingTab, MarkdownRenderer, se
 
 const VIEW_TYPE        = 'combat-tracker';
 const PLAYER_VIEW_TYPE = 'combat-tracker-player';
-const IT_PATH          = '.obsidian/plugins/initiative-tracker/data.json';
 
 const DEFAULT_BESTIARY_PATHS = [
   '3-Mechanics/CLI/compendium/bestiary',
@@ -22,6 +21,7 @@ const DEFAULT_BESTIARY_PATHS = [
 
 const DEFAULT_SETTINGS = {
   bestiaryPaths: [...DEFAULT_BESTIARY_PATHS],
+  partyFolder: '',
   entries: [],
   round: 1,
   currentTurnId: null,
@@ -134,28 +134,27 @@ function sortedByInitiative(entries) {
   });
 }
 
-async function loadPartyACs(app) {
-  try {
-    const d = JSON.parse(await app.vault.adapter.read(IT_PATH));
-    const state = (d.state?.creatures ?? []).filter(c => c.player !== false && c.name && c.ac);
-    if (state.length) return state.map(c => ({ name: c.name, ac: c.currentAC ?? c.ac }));
-    return (d.players ?? []).filter(p => p.ac).map(p => ({ name: p.name, ac: p.ac }));
-  } catch { return []; }
-}
-
-async function loadPlayersFromIT(app) {
-  try {
-    const d = JSON.parse(await app.vault.adapter.read(IT_PATH));
-    return (d.players ?? []).map(p => ({
+async function loadPlayersFromVault(app, folderPath) {
+  if (!folderPath) return [];
+  const prefix = folderPath.endsWith('/') ? folderPath : folderPath + '/';
+  const files = app.vault.getMarkdownFiles().filter(f => f.path.startsWith(prefix));
+  const players = [];
+  for (const file of files) {
+    const fm = app.metadataCache.getFileCache(file)?.frontmatter;
+    if (!fm) continue;
+    if (fm.Role !== 'Player') continue;
+    if (fm.Status && fm.Status !== 'Active') continue;
+    players.push({
       id: uid(),
       type: 'player',
-      name: p.name,
+      name: file.basename,
       initiative: null,
-      initiativeModifier: p.modifier ?? 0,
-      ac: p.ac ?? 10,
-      bestiaryPath: p.path ?? null,
-    }));
-  } catch { return []; }
+      initiativeModifier: fm.initiative ?? 0,
+      ac: fm.ac ?? 10,
+      bestiaryPath: file.path,
+    });
+  }
+  return players;
 }
 
 async function findCreatureImage(app, entry) {
@@ -302,10 +301,9 @@ class CombatTrackerView extends ItemView {
       return;
     }
 
-    const playerEntries = entries.filter(e => e.type === 'player');
-    const partyACs = playerEntries.length > 0
-      ? playerEntries.map(e => ({ name: e.name, ac: e.ac }))
-      : await loadPartyACs(this.app);
+    const partyACs = entries
+      .filter(e => e.type === 'player')
+      .map(e => ({ name: e.name, ac: e.ac }));
 
     for (const entry of sortedByInitiative(entries)) {
       const isTurn = entry.id === currentTurnId;
@@ -1013,11 +1011,16 @@ class CombatTrackerSettingsTab extends PluginSettingTab {
         });
       });
 
-    containerEl.createEl('h3', { text: 'Integrations' });
-    containerEl.createEl('p', {
-      text: 'Player import (+ Players) reads from the TTRPG Initiative Tracker plugin if installed.',
-      cls: 'setting-item-description',
-    });
+    new Setting(containerEl)
+      .setName('Party folder')
+      .setDesc('Vault folder containing player character notes. Files with Role: Player and Status: Active are imported when you click + Players.')
+      .addText(text => text
+        .setPlaceholder('1-Party/ChaosMonkeys')
+        .setValue(this.plugin.settings.partyFolder ?? '')
+        .onChange(async val => {
+          this.plugin.settings.partyFolder = val.trim();
+          await this.plugin.saveSettings();
+        }));
   }
 }
 
@@ -1077,7 +1080,7 @@ class CombatTrackerPlugin extends Plugin {
   }
 
   async addPlayers(app) {
-    const players = await loadPlayersFromIT(app ?? this.app);
+    const players = await loadPlayersFromVault(app ?? this.app, this.settings.partyFolder);
     const existing = new Set(this.settings.entries.map(e => e.name));
     let added = 0;
     for (const p of players) {
